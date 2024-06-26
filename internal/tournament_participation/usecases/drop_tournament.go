@@ -15,7 +15,7 @@ type DropTournamentHandler struct {
 }
 
 func (h *DropTournamentHandler) Execute(ctx context.Context, playerID string, tournamentID string) {
-	tournament := h.tournamentRepo.Get(ctx, tournamentID)
-	player := h.playerRepo.Get(ctx, playerID)
+	//tournament := h.tournamentRepo.Get(ctx, tournamentID)
+	//player := h.playerRepo.Get(ctx, playerID)
 
 }

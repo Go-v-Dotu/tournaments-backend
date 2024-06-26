@@ -1,3 +1,3 @@
 package domain
 
-type Results map[string]
+type Results map[string]any

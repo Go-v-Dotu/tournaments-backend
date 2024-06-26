@@ -4,7 +4,7 @@ type Match struct {
 	ID      string
 	Table   int
 	Players []*Player
-	*Result
+	//*Result
 }
 
 func NewMatch(id string, table int, players []*Player) *Match {
@@ -15,6 +15,6 @@ func NewMatch(id string, table int, players []*Player) *Match {
 	}
 }
 
-func (m *Match) SubmitResult(result *Result) {
-	m.Result = result
-}
+//func (m *Match) SubmitResult(result *Result) {
+//	m.Result = result
+//}

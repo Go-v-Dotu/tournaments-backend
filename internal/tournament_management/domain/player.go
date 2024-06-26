@@ -1,15 +1,19 @@
 package domain
 
 type Player struct {
-	ID            string
-	Dropped       bool
-	HasCommanders bool
+	ID       string
+	UserID   string
+	Username string
 }
 
-func (p *Player) Drop() {
-	p.Dropped = true
+func CreateGuestPlayer(id string, username string) *Player {
+	return NewPlayer(id, "", username)
 }
 
-func (p *Player) Recover() {
-	p.Dropped = false
+func NewPlayer(id string, userID string, username string) *Player {
+	return &Player{
+		ID:       id,
+		UserID:   userID,
+		Username: username,
+	}
 }

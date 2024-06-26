@@ -16,9 +16,9 @@ func NewRound() *Round {
 }
 
 func (r *Round) Seed() error {
-
+	return nil
 }
 
 func (r *Round) Start() error {
-
+	return nil
 }
