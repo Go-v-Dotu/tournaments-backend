@@ -8,4 +8,5 @@ import (
 
 func Make(e *echo.Group, app *application.App) {
 	makeTournamentRoutes(e, app.UseCases)
+	makeUserRoutes(e, app.UseCases)
 }

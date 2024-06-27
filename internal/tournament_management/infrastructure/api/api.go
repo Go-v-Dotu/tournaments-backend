@@ -12,8 +12,9 @@ import (
 	"tournaments_backend/internal/tournament_management/application"
 	"tournaments_backend/internal/tournament_management/infrastructure/api/routes"
 
+	echologrus "github.com/davrux/echo-logrus/v4"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/sirupsen/logrus"
 	"github.com/swaggo/echo-swagger"
 )
 
@@ -28,12 +29,15 @@ type Server struct {
 	srv *echo.Echo
 }
 
-func NewServer(app *application.App) *Server {
+func NewServer(app *application.App, logger *logrus.Logger) *Server {
 	e := echo.New()
+
 	e.HideBanner = true
 	e.HidePort = true
 
-	e.Use(middleware.Logger())
+	echologrus.Logger = logger
+	e.Logger = echologrus.GetEchoLogger()
+	e.Use(echologrus.Hook())
 
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 

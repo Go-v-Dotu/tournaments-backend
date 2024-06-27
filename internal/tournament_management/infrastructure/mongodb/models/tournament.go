@@ -38,7 +38,6 @@ func (m *Tournament) ToEntity() *domain.Tournament {
 		m.Title,
 		m.Settings.ToEntity(),
 		m.Players.ToEntity(),
-		nil,
 		m.Date.Time(),
 		domain.TournamentState(m.State),
 	)

@@ -12,7 +12,6 @@ type Tournament struct {
 	Title    string
 	Settings *Settings
 	Players  []*EnrolledPlayer
-	Rounds   []*Round
 	Date     time.Time
 	State    TournamentState
 }
@@ -24,7 +23,6 @@ func CreateTournament(id string, host *Host, title string, date time.Time) *Tour
 		title,
 		DefaultSettings(),
 		make([]*EnrolledPlayer, 0),
-		make([]*Round, 0),
 		date,
 		TournamentStateCreated,
 	)
@@ -36,7 +34,6 @@ func NewTournament(
 	title string,
 	settings *Settings,
 	players []*EnrolledPlayer,
-	rounds []*Round,
 	date time.Time,
 	state TournamentState,
 ) *Tournament {
@@ -46,7 +43,6 @@ func NewTournament(
 		Title:    title,
 		Settings: settings,
 		Players:  players,
-		Rounds:   rounds,
 		Date:     date,
 		State:    state,
 	}
