@@ -18,7 +18,9 @@ type Commands struct {
 }
 
 type Queries struct {
+	EnrolledPlayersHandler   *queries.EnrolledPlayersHandler
 	HostedTournamentsHandler *queries.HostedTournamentsHandler
+	TournamentByIDHandler    *queries.TournamentByIDHandler
 }
 
 func NewUseCases(
@@ -26,6 +28,7 @@ func NewUseCases(
 	playerRepo domain.PlayerRepository,
 	tournamentRepo domain.TournamentRepository,
 	tournamentQueryService queries.TournamentQueryService,
+	playerQueryService queries.PlayerQueryService,
 ) *UseCases {
 	return &UseCases{
 		Commands: Commands{
@@ -34,7 +37,9 @@ func NewUseCases(
 			HostTournamentHandler:    commands.NewHostTournamentHandler(nil, hostRepo, tournamentRepo),
 		},
 		Queries: Queries{
+			EnrolledPlayersHandler:   queries.NewEnrolledPlayersHandler(hostRepo, tournamentRepo, playerQueryService),
 			HostedTournamentsHandler: queries.NewHostedTournamentsHandler(hostRepo, tournamentQueryService),
+			TournamentByIDHandler:    queries.NewTournamentByIDHandler(hostRepo, tournamentRepo, tournamentQueryService),
 		},
 	}
 }

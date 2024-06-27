@@ -1,0 +1,223 @@
+basePath: /api/v1
+definitions:
+  controllers.GuestUserInfo:
+    properties:
+      username:
+        type: string
+    type: object
+  controllers.TournamentInfo:
+    properties:
+      date:
+        type: string
+      title:
+        type: string
+    type: object
+  views.EnrollGuestPlayerResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  views.EnrollPlayerResponse:
+    type: object
+  views.GetPlayersResponse:
+    properties:
+      players:
+        items:
+          $ref: '#/definitions/views.Player'
+        type: array
+    type: object
+  views.GetTournamentResponse:
+    properties:
+      tournament:
+        $ref: '#/definitions/views.Tournament'
+    type: object
+  views.HostTournamentResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  views.HostedTournamentsResponse:
+    properties:
+      tournaments:
+        items:
+          $ref: '#/definitions/views.TournamentPreview'
+        type: array
+    type: object
+  views.Player:
+    properties:
+      dropped:
+        type: boolean
+      id:
+        type: string
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  views.Tournament:
+    properties:
+      date:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  views.TournamentPreview:
+    properties:
+      date:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      total_players:
+        type: integer
+    type: object
+host: 127.0.0.1:30001
+info:
+  contact: {}
+  description: Service for managing lifecycle of the tournaments
+  title: Tournament Management Service
+  version: 1.0.0
+paths:
+  /tournaments:
+    post:
+      consumes:
+      - application/json
+      description: host tournament by authorized player
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tournament info
+        in: body
+        name: tournament_info
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.TournamentInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.HostTournamentResponse'
+      summary: Host Tournament
+      tags:
+      - tournaments
+  /tournaments/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get tournament
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.GetTournamentResponse'
+      summary: Get Tournament
+      tags:
+      - tournaments
+  /tournaments/{id}/players:
+    get:
+      consumes:
+      - application/json
+      description: enroll a player that isn't a registered user
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Guest info
+        in: body
+        name: user_info
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.GuestUserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.EnrollGuestPlayerResponse'
+      summary: Enroll Guest Player
+      tags:
+      - tournaments
+      - players
+  /tournaments/{id}/players/{user_id}:
+    put:
+      consumes:
+      - application/json
+      description: enroll a player that is a registered user
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID of the user to be added
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.EnrollPlayerResponse'
+      summary: Enroll Player
+      tags:
+      - tournaments
+      - players
+  /user/tournaments:
+    get:
+      consumes:
+      - application/json
+      description: get all tournaments hosted by authorized user
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.HostedTournamentsResponse'
+      summary: Hosted Tournaments
+      tags:
+      - tournaments
+swagger: "2.0"

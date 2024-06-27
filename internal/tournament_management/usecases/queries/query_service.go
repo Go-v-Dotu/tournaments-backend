@@ -1,7 +1,14 @@
 package queries
 
-import "context"
+import (
+	"context"
+)
 
 type TournamentQueryService interface {
-	GetByHostID(ctx context.Context, hostID string) (Tournaments, error)
+	GetByID(ctx context.Context, id string) (*Tournament, error)
+	GetByHostID(ctx context.Context, hostID string) ([]*Tournament, error)
+}
+
+type PlayerQueryService interface {
+	GetByTournamentID(ctx context.Context, tournamentID string) ([]*Player, error)
 }

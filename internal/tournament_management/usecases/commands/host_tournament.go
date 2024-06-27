@@ -33,18 +33,18 @@ func (h *HostTournamentHandler) Execute(
 	hostUserID string,
 	title string,
 	date time.Time,
-) error {
+) (string, error) {
 	id := h.tournamentRepo.NextID(ctx)
 	host, err := h.hostRepo.GetByUserID(ctx, hostUserID)
 	if err != nil {
-		return errors.New("")
+		return "", errors.New("")
 	}
 
 	t := domain.CreateTournament(id, host, title, date)
 
 	if err := h.tournamentRepo.Save(ctx, t); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return id, nil
 }

@@ -22,9 +22,16 @@ func NewApp(ctx context.Context, mongoConfig mongodb.Config) (*App, error) {
 	playerRepo := mongodb.NewPlayerRepository(*dbClient)
 	tournamentRepo := mongodb.NewTournamentRepository(*dbClient)
 	tournamentQueryService := mongodb.NewTournamentQueryService(*dbClient)
+	playerQueryService := mongodb.NewPlayerQueryService(*dbClient)
 
 	app := App{
-		UseCases: usecases.NewUseCases(hostRepo, playerRepo, tournamentRepo, tournamentQueryService),
+		UseCases: usecases.NewUseCases(
+			hostRepo,
+			playerRepo,
+			tournamentRepo,
+			tournamentQueryService,
+			playerQueryService,
+		),
 	}
 
 	return &app, nil

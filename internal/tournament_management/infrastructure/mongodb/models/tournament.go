@@ -1,10 +1,8 @@
 package models
 
 import (
-	"tournaments_backend/internal/tournament_management/domain"
-	"tournaments_backend/internal/tournament_management/usecases/queries"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"tournaments_backend/internal/tournament_management/domain"
 )
 
 type Tournament struct {
@@ -16,6 +14,8 @@ type Tournament struct {
 	Date     primitive.DateTime `bson:"date"`
 	State    TournamentState    `bson:"state"`
 }
+
+type Tournaments []*Tournament
 
 type Settings struct {
 	MaxPlayers int `bson:"max_players"`
@@ -68,6 +68,14 @@ func (m *Settings) ToEntity() *domain.Settings {
 	return domain.NewSettings(m.MaxPlayers)
 }
 
+func (ms Tournaments) ToEntity() []*domain.Tournament {
+	tournaments := make([]*domain.Tournament, 0, len(ms))
+	for _, m := range ms {
+		tournaments = append(tournaments, m.ToEntity())
+	}
+	return tournaments
+}
+
 func NewSettings(settings *domain.Settings) *Settings {
 	return &Settings{MaxPlayers: settings.MaxPlayers}
 }
@@ -102,23 +110,4 @@ func NewEnrolledPlayers(players []*domain.EnrolledPlayer) EnrolledPlayers {
 		ms = append(ms, NewEnrolledPlayer(player))
 	}
 	return ms
-}
-
-type Tournaments []*Tournament
-
-func (m *Tournament) ToResponse() *queries.Tournament {
-	return &queries.Tournament{
-		ID:           m.ID.Hex(),
-		Title:        m.Title,
-		Date:         m.Date.Time(),
-		TotalPlayers: len(m.Players),
-	}
-}
-
-func (ms Tournaments) ToResponse() queries.Tournaments {
-	tournaments := make(queries.Tournaments, 0, len(ms))
-	for _, m := range ms {
-		tournaments = append(tournaments, m.ToResponse())
-	}
-	return tournaments
 }

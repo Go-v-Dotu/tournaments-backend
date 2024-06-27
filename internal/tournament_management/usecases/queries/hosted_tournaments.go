@@ -22,7 +22,7 @@ func NewHostedTournamentsHandler(
 	}
 }
 
-func (h *HostedTournamentsHandler) Execute(ctx context.Context, hostUserID string) (Tournaments, error) {
+func (h *HostedTournamentsHandler) Execute(ctx context.Context, hostUserID string) ([]*Tournament, error) {
 	host, err := h.hostRepo.GetByUserID(ctx, hostUserID)
 	if err != nil {
 		return nil, errors.New("")

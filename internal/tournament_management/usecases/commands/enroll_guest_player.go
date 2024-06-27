@@ -35,30 +35,30 @@ func (h *EnrollGuestPlayerHandler) Execute(
 	hostUserID string,
 	tournamentID string,
 	username string,
-) error {
+) (string, error) {
 	tournament, err := h.tournamentRepo.Get(ctx, tournamentID)
 	if err != nil {
-		return errors.New("")
+		return "", errors.New("")
 	}
 
 	host, err := h.hostRepo.GetByUserID(ctx, hostUserID)
 	if err != nil {
-		return errors.New("")
+		return "", errors.New("")
 	}
 
 	playerID := h.playerRepo.NextID(ctx)
 	player := domain.CreateGuestPlayer(playerID, username)
 	if err := h.playerRepo.Save(ctx, player); err != nil {
-		return errors.New("")
+		return "", errors.New("")
 	}
 
 	if err := tournament.EnrollPlayer(host, player); err != nil {
-		return errors.New("")
+		return "", errors.New("")
 	}
 
 	if err := h.tournamentRepo.Save(ctx, tournament); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return playerID, nil
 }
