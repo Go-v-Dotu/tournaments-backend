@@ -12,6 +12,17 @@ definitions:
       title:
         type: string
     type: object
+  controllers.UserInfo:
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+    type: object
+  views.AddUserResponse:
+    type: object
+  views.DropPlayerResponse:
+    type: object
   views.EnrollGuestPlayerResponse:
     properties:
       id:
@@ -54,6 +65,8 @@ definitions:
       username:
         type: string
     type: object
+  views.SelfEnrollResponse:
+    type: object
   views.Tournament:
     properties:
       date:
@@ -62,6 +75,8 @@ definitions:
         type: string
       title:
         type: string
+      total_players:
+        type: integer
     type: object
   views.TournamentPreview:
     properties:
@@ -134,8 +149,60 @@ paths:
       summary: Get Tournament
       tags:
       - tournaments
+  /tournaments/{id}/enroll:
+    post:
+      consumes:
+      - application/json
+      description: enroll self to the tournament
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.SelfEnrollResponse'
+      summary: Self Enroll
+      tags:
+      - tournaments
   /tournaments/{id}/players:
     get:
+      consumes:
+      - application/json
+      description: get players for tournament
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.GetPlayersResponse'
+      summary: Get Players
+      tags:
+      - tournaments
+      - players
+    post:
       consumes:
       - application/json
       description: enroll a player that isn't a registered user
@@ -164,6 +231,70 @@ paths:
           schema:
             $ref: '#/definitions/views.EnrollGuestPlayerResponse'
       summary: Enroll Guest Player
+      tags:
+      - tournaments
+      - players
+  /tournaments/{id}/players/{player_id}/drop:
+    post:
+      consumes:
+      - application/json
+      description: drop a player
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID of the player
+        in: path
+        name: player_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.DropPlayerResponse'
+      summary: Drop Player
+      tags:
+      - tournaments
+      - players
+  /tournaments/{id}/players/{player_id}/recover:
+    post:
+      consumes:
+      - application/json
+      description: recover a player
+      parameters:
+      - description: Authorization info
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the tournament
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID of the player
+        in: path
+        name: player_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.DropPlayerResponse'
+      summary: Recover Player
       tags:
       - tournaments
       - players
@@ -220,4 +351,26 @@ paths:
       summary: Hosted Tournaments
       tags:
       - tournaments
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: notify that user was registered
+      parameters:
+      - description: User info
+        in: body
+        name: user_info
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/views.AddUserResponse'
+      summary: Add User
+      tags:
+      - user
 swagger: "2.0"

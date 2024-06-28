@@ -95,8 +95,85 @@ const docTemplate = `{
                 }
             }
         },
+        "/tournaments/{id}/enroll": {
+            "post": {
+                "description": "enroll self to the tournament",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tournaments"
+                ],
+                "summary": "Self Enroll",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization info",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the tournament",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/views.SelfEnrollResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/tournaments/{id}/players": {
             "get": {
+                "description": "get players for tournament",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tournaments",
+                    "players"
+                ],
+                "summary": "Get Players",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization info",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the tournament",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/views.GetPlayersResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
                 "description": "enroll a player that isn't a registered user",
                 "consumes": [
                     "application/json"
@@ -139,6 +216,100 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/views.EnrollGuestPlayerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tournaments/{id}/players/{player_id}/drop": {
+            "post": {
+                "description": "drop a player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tournaments",
+                    "players"
+                ],
+                "summary": "Drop Player",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization info",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the tournament",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the player",
+                        "name": "player_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/views.DropPlayerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tournaments/{id}/players/{player_id}/recover": {
+            "post": {
+                "description": "recover a player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tournaments",
+                    "players"
+                ],
+                "summary": "Recover Player",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization info",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the tournament",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the player",
+                        "name": "player_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/views.DropPlayerResponse"
                         }
                     }
                 }
@@ -222,6 +393,40 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users": {
+            "post": {
+                "description": "notify that user was registered",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Add User",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user_info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UserInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/views.AddUserResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -243,6 +448,23 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "controllers.UserInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "views.AddUserResponse": {
+            "type": "object"
+        },
+        "views.DropPlayerResponse": {
+            "type": "object"
         },
         "views.EnrollGuestPlayerResponse": {
             "type": "object",
@@ -310,6 +532,9 @@ const docTemplate = `{
                 }
             }
         },
+        "views.SelfEnrollResponse": {
+            "type": "object"
+        },
         "views.Tournament": {
             "type": "object",
             "properties": {
@@ -321,6 +546,9 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "total_players": {
+                    "type": "integer"
                 }
             }
         },
