@@ -21,11 +21,11 @@ type App struct {
 
 func NewApp(
 	ctx context.Context,
-	mongoConfig mongodb.Config,
+	mongoAddr string,
 	rabbitAddr string,
 	logger *logrus.Logger,
 ) (*App, error) {
-	dbClient, err := mongodb.NewClient(ctx, mongoConfig)
+	dbClient, err := mongodb.NewClient(ctx, mongoAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Mongo client: %v", err)
 	}
