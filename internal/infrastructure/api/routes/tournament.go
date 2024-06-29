@@ -42,17 +42,17 @@ func (h *tournamentHandler) HostedTournaments(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, views.ErrorResponse{})
 	}
 
-	tt := make([]*views.TournamentPreview, 0, len(tournaments))
-	for _, tot := range tournaments {
-		tt = append(tt, &views.TournamentPreview{
-			ID:           tot.ID,
-			Title:        tot.Title,
-			Date:         tot.Date,
-			TotalPlayers: tot.TotalPlayers,
+	tournamentViews := make([]*views.TournamentPreview, 0, len(tournaments))
+	for _, tournament := range tournaments {
+		tournamentViews = append(tournamentViews, &views.TournamentPreview{
+			ID:           tournament.ID,
+			Title:        tournament.Title,
+			Date:         tournament.Date,
+			TotalPlayers: tournament.TotalPlayers,
 		})
 	}
 
-	resp := &views.HostedTournamentsResponse{Tournaments: tt}
+	resp := &views.HostedTournamentsResponse{Tournaments: tournamentViews}
 
 	return c.JSON(http.StatusOK, resp)
 }
@@ -128,14 +128,14 @@ func (h *tournamentHandler) GetTournament(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, views.ErrorResponse{})
 	}
 
-	tt := &views.Tournament{
+	tournamentView := &views.Tournament{
 		ID:           tournament.ID,
 		Title:        tournament.Title,
 		Date:         tournament.Date,
 		TotalPlayers: tournament.TotalPlayers,
 	}
 
-	resp := &views.GetTournamentResponse{Tournament: tt}
+	resp := &views.GetTournamentResponse{Tournament: tournamentView}
 
 	return c.JSON(http.StatusOK, resp)
 }
@@ -210,9 +210,9 @@ func (h *tournamentHandler) GetPlayers(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, views.ErrorResponse{})
 	}
 
-	pp := make([]*views.Player, 0, len(enrolledPlayers))
+	playerViews := make([]*views.Player, 0, len(enrolledPlayers))
 	for _, enrolledPlayer := range enrolledPlayers {
-		pp = append(pp, &views.Player{
+		playerViews = append(playerViews, &views.Player{
 			ID:       enrolledPlayer.ID,
 			UserID:   enrolledPlayer.UserID,
 			Username: enrolledPlayer.Username,
@@ -220,7 +220,7 @@ func (h *tournamentHandler) GetPlayers(c echo.Context) error {
 		})
 	}
 
-	resp := &views.GetPlayersResponse{Players: pp}
+	resp := &views.GetPlayersResponse{Players: playerViews}
 
 	return c.JSON(http.StatusOK, resp)
 }

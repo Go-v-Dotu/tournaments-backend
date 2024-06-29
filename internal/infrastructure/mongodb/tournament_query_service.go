@@ -50,7 +50,7 @@ func (r *tournamentQueryService) GetByID(ctx context.Context, id string) (*queri
 		return nil, fmt.Errorf("host not found: %w", err)
 	}
 
-	respik := &queries.Tournament{
+	tournament := &queries.Tournament{
 		ID:    tournamentModel.ID.Hex(),
 		Title: tournamentModel.Title,
 		Host: &queries.Host{
@@ -62,7 +62,7 @@ func (r *tournamentQueryService) GetByID(ctx context.Context, id string) (*queri
 		TotalPlayers: len(tournamentModel.Players),
 	}
 
-	return respik, nil
+	return tournament, nil
 }
 
 func (r *tournamentQueryService) GetByHostID(ctx context.Context, hostID string) ([]*queries.Tournament, error) {
@@ -77,32 +77,32 @@ func (r *tournamentQueryService) GetByHostID(ctx context.Context, hostID string)
 		return nil, fmt.Errorf("tournament not found: %w", err)
 	}
 
-	tournaments := make(models.Tournaments, 0)
-	if err := cur.All(ctx, &tournaments); err != nil {
+	tournamentModels := make(models.Tournaments, 0)
+	if err := cur.All(ctx, &tournamentModels); err != nil {
 		return nil, fmt.Errorf("error getting tournament by host: %w", err)
 	}
 
-	respik := make([]*queries.Tournament, 0, len(tournaments))
-	for _, tour := range tournaments {
-		f := bson.D{{Key: "_id", Value: tour.HostID}}
+	tournaments := make([]*queries.Tournament, 0, len(tournamentModels))
+	for _, tournamentModel := range tournamentModels {
+		f := bson.D{{Key: "_id", Value: tournamentModel.HostID}}
 		res := r.hostColl.FindOne(ctx, f)
 
 		var hostModel models.Host
 		if err := res.Decode(&hostModel); err != nil {
 			return nil, fmt.Errorf("host not found: %w", err)
 		}
-		respik = append(respik, &queries.Tournament{
-			ID:    tour.ID.Hex(),
-			Title: tour.Title,
+		tournaments = append(tournaments, &queries.Tournament{
+			ID:    tournamentModel.ID.Hex(),
+			Title: tournamentModel.Title,
 			Host: &queries.Host{
 				ID:       hostModel.ID.Hex(),
 				UserID:   hostModel.UserID,
 				Username: hostModel.Username,
 			},
-			Date:         tour.Date.Time(),
-			TotalPlayers: len(tour.Players),
+			Date:         tournamentModel.Date.Time(),
+			TotalPlayers: len(tournamentModel.Players),
 		})
 	}
 
-	return respik, nil
+	return tournaments, nil
 }
